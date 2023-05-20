@@ -1,0 +1,6 @@
+node_modules/
+istockphoto.jpg
+.vscode/
+package-lock.json
+.env
+files/
