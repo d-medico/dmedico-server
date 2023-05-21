@@ -3,6 +3,8 @@ import fs from 'fs'
 import {SpheronClient, ProtocolEnum} from '@spheron/storage'
 import dotenv from 'dotenv'
 import path from 'path'
+import CID from 'cids'
+import {ethers} from 'ethers'
 
 dotenv.config()
 const token = process.env.SPHERON_TOKEN
@@ -29,7 +31,7 @@ return protocolLink
 
 export const generatePrepData = async(filename) => {
     
-    const cmd = `./generate-car --single -i ${filename} -o out -p ${path.dirname(filename)}/`
+    const cmd = `generate-car/generate-car --single -i ${filename} -o out -p ${path.dirname(filename)}/`
     try {
         if (filename){            
             if (fs.statSync(filename).isFile()) {
@@ -40,7 +42,10 @@ export const generatePrepData = async(filename) => {
                     const data = JSON.parse(result)
                     dataObj.pieceSize = data.PieceSize
                     dataObj.size = data.Ipld.Link[0].Size
-                    dataObj.pieceCid = data.PieceCid     
+                    //const cid = new CID(data.PieceCid)
+                    //const cid = ethers.hexlify(data.PieceCid)                    
+                    //console.log('Hexify:', cid)
+                    dataObj.pieceCid = '0x0'+data.PieceCid
                     dataObj.dataCid = data.DataCid
                     const carFile = fs.readdirSync('out')                        
                         if (fs.statSync('out/'+carFile[0]).isFile()) {                                                     
