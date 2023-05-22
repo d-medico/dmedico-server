@@ -25,7 +25,18 @@ jobs:
       run:  docker build -t $IMAGE_NAME:latest .
 
     - name: Configure Docker Client
-      run:  gcloud auth configure-docker --quiet
+      run:  |-
+        gcloud auth configure-docker --quiet
+        gcloud auth configure-docker asia-south1-docker.pkg.dev --quiet
+
+    - name: Push container image to Artifactory Registry
+      env:
+        GIT_TAG: v0.1.0
+      run: |-
+        docker tag $IMAGE_NAME:latest asia-south1-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME:latest
+        docker tag $IMAGE_NAME:latest asia-south1-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME:$GIT_TAG
+        docker push asia-south1-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME:latest
+        docker push asia-south1-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME:$GIT_TAG
 
     - name: Push container image to GCR
       env:
