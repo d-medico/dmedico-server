@@ -1,0 +1,28 @@
+---
+name: Build and push image to GHCR
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build-push-ghcr:
+    name: Build and push to GHCR
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: dmedico-server
+      
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+
+    - name: login to ghcr
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{github.actor}}
+        password: ${{secrets.ACTIONS}}
+
+    - name: Build Docker Image
+      run:  |-
+        docker build -t ghcr.io/ronykris/$IMAGE_NAME:latest .
+        docker push ghcr.io/ronykris/$IMAGE_NAME:latest    
