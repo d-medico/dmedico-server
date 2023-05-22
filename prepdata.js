@@ -42,10 +42,12 @@ export const generatePrepData = async(filename) => {
                     const data = JSON.parse(result)
                     dataObj.pieceSize = data.PieceSize
                     dataObj.size = data.Ipld.Link[0].Size
-                    //const cid = new CID(data.PieceCid)
+                    const cidHexRaw = new CID(data.PieceCid).toString('base16').substring(1) //convert to hex
                     //const cid = ethers.hexlify(data.PieceCid)                    
-                    //console.log('Hexify:', cid)
-                    dataObj.pieceCid = '0x0'+data.PieceCid
+                    //console.log('Hexify:', cid)                    
+                    const cidHex = "0x" + cidHexRaw //hex notation
+                    dataObj.pieceCid = cidHex
+                    //dataObj.pieceCid = data.PieceCid
                     dataObj.dataCid = data.DataCid
                     const carFile = fs.readdirSync('out')                        
                         if (fs.statSync('out/'+carFile[0]).isFile()) {                                                     

@@ -37,8 +37,8 @@ app.post('/send', async (req, res) => {
                 .then(async (response) => {
                     response.signer = obj
                     console.log(response)   
-                    await doDeal(response)
-                    fs.unlinkSync(path)                                 
+                    //await doDeal(response)
+                    //fs.unlinkSync(path)                                 
                     return res.send({
                         status: 'success',
                         datetime: moment(),

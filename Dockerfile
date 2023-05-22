@@ -20,13 +20,3 @@ FROM dependencies as builder
 EXPOSE 5000
 CMD npm run start
 
-
-
-#COPY generate-car/go.mod ./
-#RUN go mod download 
-#WORKDIR /app/generate-car
-
-
-#FROM node:19.2-alpine as dependencies
-
-
