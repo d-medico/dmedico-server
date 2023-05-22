@@ -25,8 +25,7 @@ jobs:
       run:  docker build -t $IMAGE_NAME:latest .
 
     - name: Configure Docker Client
-      run:  |-
-        gcloud auth configure-docker --quiet
+      run:  |-        
         gcloud auth configure-docker asia-south1-docker.pkg.dev --quiet
 
     - name: Push container image to Artifactory Registry      
