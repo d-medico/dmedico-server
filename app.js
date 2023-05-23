@@ -5,7 +5,6 @@ import fileUpload from 'express-fileupload'
 import path from 'path'
 import {generatePrepData, doUpload} from './prepdata.js'
 import moment from "moment"
-import {doDeal} from './utils.js'
 import fs from 'fs'
 
 const app = express()
@@ -52,8 +51,37 @@ app.post('/send', async (req, res) => {
             })
         }    
     })
-    
-    
 })
+
+
+app.get('/upload', async (req, res) => {
+    if (!req.query.filename){
+        return res.status(400).send('No files were sent...')
+    }    
+    const toUpload = req.query.filename
+    if (toUpload) {
+        const path = './files/' + toUpload.replace(/\s/g, '')
+        console.log(path)
+        if (fs.existsSync(path) && fs.statSync(path).isFile()) {
+            try {
+                const ipfsUrl = await doUpload(path)
+                if(ipfsUrl) {
+                    console.log(`IPFS URL : ${ipfsUrl}`)
+                    res.send({
+                        status: 'uploaded',
+                        url: ipfsUrl
+                    })
+                }
+            } catch (e) {
+                console.error("Something went wrong " + e.name + " " + e.message)
+            }                        
+        } else res.send({status: 'failure'})
+    } else {
+        console.error('File was not found...')
+        res.send({status: 'failure'})
+    }
+})
+
+
 
 app.listen(port, console.log(`App running on port ${port}...`));
