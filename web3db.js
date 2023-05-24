@@ -30,6 +30,22 @@ export class dbcrud {
         
     }
 
+    getFilesSharedByipfsurl = async (id, ipfsurl) => {
+        try {
+            const collection = this.db.collection("files")
+            const records = await collection.where("id", "==", id).get()
+            // Array of records is available under the data property
+            const { data } = records
+            const dataLen = data.length
+            const recordsArray = []
+            for ( let i=0; i< dataLen; i++){
+                recordsArray.push(data[i].data)
+            }
+            return recordsArray
+        } catch (e) { console.error(e)}
+        
+    }
+
 
     deleteFile = async(id, ipfsurl) => {
         try {
@@ -54,7 +70,7 @@ export class dbcrud {
     getSharedFiles = async(userwallet) => {
         try {
             const collection = this.db.collection("access")
-            const records = await collection.where("userwallet", "==", userwallet).get()
+            const records = await collection.where("owner", "==", userwallet).get()
             // Array of records is available under the data property
             const { data } = records
             const dataLen = data.length
@@ -66,23 +82,50 @@ export class dbcrud {
         } catch (e) { console.error(e)}
         
     }
-    /*
-    getAccessRecord = async(id, ipfsurl) => {
+    
+    getAccessRecord = async(owner, ipfsurl) => {
         try {
             const records1 = await this.db.collection("access").where("ipfsurl", "==", ipfsurl).get()
-            const records2 = await this.db.collection("access").where("id", "==", id).get()
-            const records = []
-            for ( let i = 0; i < records1.length; i++){
-                for ( let j = 0; j < records2.length; j++){
-                    if ( records1[i] === records2[j]){
-                        records.push(records1[i])
-                    }
+            const { data } = records1
+            let records1Array = []
+            if (data ) {
+                const dataLen = data.length                
+                for ( let i=0; i< dataLen; i++){
+                    records1Array.push(data[i].data)
                 }
-            }        
-            return records
+                //console.log(records1Array)
+            }
+            
+            const records2 = await this.db.collection("access").where("owner", "==", owner).get()
+            const { data1 } = records2
+            let records2Array = []
+            if ( data1) {
+                const data1Len = data1.length                
+                for ( let j=0; j< data1Len; j++){
+                    records2Array.push(data[j].data)
+                }
+                //console.log(records2Array)
+            }
+            
+            const records = []
+            if ( records1Array.length !== 0 && records2Array.length !== 0){
+                for ( let x = 0; i < records1Array.length; i++){
+                    for ( let y = 0; j < records2Array.length; j++){
+                        if ( records1Array[i].id === records2Array[j].id){
+                            records.push(records1Array[i])
+                        }
+                    }
+                }        
+                return records
+            } else if ( records1Array.length !== 0 ){
+                return records1Array
+            } else ( records2Array !== 0 ) 
+                return records2Array
+            
+            
         } catch (e) { console.error(e)}
         
-    }*/
+    }
 
     revokeAccess = async(id) => {
         try {

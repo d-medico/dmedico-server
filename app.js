@@ -216,6 +216,25 @@ app.post('/update', async (req, res) => {
                     console.error(e)
                     res.send({status: 'error'})
                 }
+            } else if ( data[0].function === 'getAccessRecord') {
+                try {
+                    crud.getAccessRecord(data[1].owner, data[1].ipfsurl)
+                        .then((result) => {
+                            console.log(result)
+                            res.send({
+                                status: 'success',
+                                records: result
+                            })
+                        })
+                        .catch ((e) => {
+                            console.error(e)
+                            res.send({status: 'error'})
+                        })                   
+                    
+                } catch (e) {
+                    console.error(e)
+                    res.send({status: 'error'})
+                }  
             } else {
                 throw new Error('Unrecognized command...')
             }
