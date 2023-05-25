@@ -117,9 +117,9 @@ export class dbcrud {
                     }
                 }        
                 return records
-            } else if ( records1Array.length !== 0 ){
+            } else if ( records2Array.length === 0 && records1Array !== 0 ){
                 return records1Array
-            } else ( records2Array !== 0 ) 
+            } else if ( records1Array.length === 0 && records2Array !== 0) 
                 return records2Array
             
             
